@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Join a Ride - RideShare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --primary-color: #2f3542;
+      --secondary-color: #57606f;
+      --accent-color: #1e90ff;
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-color: #2f3542;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background-image:
+        linear-gradient(rgba(47,53,66,0.9), rgba(47,53,66,0.9)),
+        url('https://images.unsplash.com/photo-1465447142348-e9952c393450?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .rides-list-container {
+      background: var(--card-bg);
+      padding: 2.5rem 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      z-index: 1;
+    }
+
+    .rides-list-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .ride-entry {
+      border: 1px solid #e0e0e0;
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .ride-entry:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      border-color: var(--accent-color);
+    }
+
+    .ride-route {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .ride-details {
+      color: var(--secondary-color);
+      font-size: 0.95rem;
+    }
+
+    .join-btn {
+      margin-top: 0.5rem;
+      padding: 10px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .join-btn:hover {
+      background-color: #187bcd;
+      transform: translateY(-1px);
+    }
+
+    .join-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 600px) {
+      .rides-list-container {
+        padding: 1.5rem;
+        max-width: 95vw;
+      }
+
+      .ride-route {
+        font-size: 1rem;
+      }
+
+      .ride-details {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="rides-list-container">
+    <div class="rides-list-title">Available Rides</div>
+
+    <div class="ride-entry">
+      <div class="ride-route">From: Bangalore → To: Mysore</div>
+      <div class="ride-details">People allowed: 2 | Expenses: ₹400</div>
+      <button class="join-btn" onclick="alert('You requested to join this ride!')">Join this Ride</button>
+    </div>
+
+    <div class="ride-entry">
+      <div class="ride-route">From: Hyderabad → To: Vijayawada</div>
+      <div class="ride-details">People allowed: 3 | Expenses: ₹600</div>
+      <button class="join-btn" onclick="alert('You requested to join this ride!')">Join this Ride</button>
+    </div>
+
+    <div class="ride-entry">
+      <div class="ride-route">From: Pune → To: Mumbai</div>
+      <div class="ride-details">People allowed: 1 | Expenses: ₹300</div>
+      <button class="join-btn" onclick="alert('You requested to join this ride!')">Join this Ride</button>
+    </div>
+  </div>
+</body>
+</html>

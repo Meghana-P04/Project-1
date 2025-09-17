@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RideShare - Profile Setup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Attractive and dignified background with overlay -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #232526;
+      /* gradient with image overlay */
+      background-image:
+        linear-gradient(120deg, rgba(52,58,64,0.88) 0%, rgba(34,37,38,0.97) 100%),
+        url('https://images.unsplash.com/photo-1465447142348-e9952c393450?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .profile-container {
+      background: rgba(255,255,255,0.98);
+      padding: 2.2rem 2rem 2rem 2rem;
+      border-radius: 1.5rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 32px 0 rgba(34,34,34,0.21);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .profile-title {
+      font-size: 2rem;
+      color: #2a363b;
+      font-weight: bold;
+      margin: 0 0 8px 0;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .profile-subtitle {
+      color: #51576d;
+      font-size: 1.1rem;
+      margin-bottom: 18px;
+      font-style: italic;
+      text-align: center;
+    }
+    .profile-label {
+      color: #2a363b;
+      font-weight: 500;
+      margin: 0 0 5px 0;
+      display: block;
+      margin-top: 12px;
+    }
+    .profile-input, .profile-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #51576d;
+      background: #f9f9fa;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .profile-input:focus, .profile-textarea:focus {
+      border-color: #2a363b;
+    }
+    .profile-textarea {
+      resize: vertical;
+      min-height: 48px;
+      max-height: 120px;
+    }
+    .profile-photo-label {
+      margin-top: 16px;
+      margin-bottom: 5px;
+      color: #2a363b;
+      font-weight: 500;
+    }
+    .profile-photo-preview {
+      margin: 8px 0 4px 0;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #51576d;
+      display: none;
+      background: #eaeaea;
+    }
+    .profile-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #51576d 30%, #232526 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 1.08rem;
+      font-weight: bold;
+      margin-top: 14px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 18px 0 rgba(51,51,51,0.10);
+    }
+    .profile-btn:hover, .profile-btn:focus {
+      background: linear-gradient(90deg, #232526 30%, #51576d 100%);
+      box-shadow: 0 6px 28px 0 rgba(51,51,51,0.13);
+    }
+    .profile-status {
+      margin-top: 16px;
+      min-height: 22px;
+      color: #c0392b;
+      font-weight: 500;
+      text-align: center;
+      font-size: 1rem;
+    }
+    @media (max-width: 520px) {
+      .profile-container {
+        max-width: 96vw;
+        padding: 1.1rem 4vw 1.1rem 4vw;
+      }
+      .profile-title {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-title">Complete Your Profile</div>
+    <div class="profile-subtitle">Set up your RideShare identity and hit the road!</div>
+    <form id="profileForm" autocomplete="off">
+      <label for="name" class="profile-label">Name</label>
+      <input class="profile-input" type="text" id="name" name="name" required maxlength="30" placeholder="Your Name">
+      <label for="age" class="profile-label">Age</label>
+      <input class="profile-input" type="number" id="age" name="age" min="16" max="100" required placeholder="Your Age">
+      <span class="profile-photo-label">Profile Photo</span>
+      <input class="profile-input" type="file" id="photo" name="photo" accept="image/*">
+      <img id="photoPreview" class="profile-photo-preview" alt="Profile Preview">
+      <label for="address" class="profile-label">Address</label>
+      <textarea class="profile-textarea" id="address" name="address" required maxlength="150" placeholder="Your Address"></textarea>
+      <button type="submit" class="profile-btn">Save Profile</button>
+      <div class="profile-status" id="status"></div>
+    </form>
+  </div>
+  <script>
+    // Simple photo preview
+    document.getElementById('photo').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('photoPreview');
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = "";
+        preview.style.display = "none";
+      }
+    });
+
+    // Simple form validation and status
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const age = document.getElementById('age').value;
+      const address = document.getElementById('address').value.trim();
+      let status = document.getElementById('status');
+      if (!name || !age || !address) {
+        status.textContent = "Please fill out all fields.";
+        return;
+      }
+      status.style.color = "#27ae60";
+      status.textContent = "Profile saved! Ready to ride 🏍️";
+      setTimeout(() => status.textContent = "", 2500);
+    });
+  </script>
+</body>
+</html>

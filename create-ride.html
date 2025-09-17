@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create a Ride - RideShare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #232526;
+      background-image:
+        linear-gradient(120deg, rgba(52,58,64,0.88) 0%, rgba(34,37,38,0.97) 100%),
+        url('https://images.unsplash.com/photo-1465447142348-e9952c393450?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ride-form-container {
+      background: rgba(255,255,255,0.98);
+      padding: 2.2rem 2rem 2rem 2rem;
+      border-radius: 1.5rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 8px 32px 0 rgba(34,34,34,0.21);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+    .ride-form-title {
+      font-size: 2rem;
+      color: #51576d;
+      font-weight: bold;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .ride-form-label {
+      color: #51576d;
+      font-weight: 500;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .ride-form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #51576d;
+      background: #f9f9fa;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+      color: #232526;
+    }
+    .ride-form-input:focus {
+      border-color: #232526;
+    }
+    .ride-form-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #51576d 30%, #232526 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 1.08rem;
+      font-weight: bold;
+      margin-top: 14px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 18px 0 rgba(51,51,51,0.10);
+    }
+    .ride-form-btn:hover, .ride-form-btn:focus {
+      background: linear-gradient(90deg, #232526 30%, #51576d 100%);
+      box-shadow: 0 6px 28px 0 rgba(51,51,51,0.13);
+    }
+    .ride-form-status {
+      margin-top: 16px;
+      min-height: 22px;
+      color: #c0392b;
+      font-weight: 500;
+      text-align: center;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="ride-form-container">
+    <div class="ride-form-title">Create a Ride</div>
+    <form id="createRideForm" autocomplete="off">
+      <label for="from" class="ride-form-label">From</label>
+      <input class="ride-form-input" type="text" id="from" name="from" required placeholder="Starting place">
+
+      <label for="to" class="ride-form-label">To</label>
+      <input class="ride-form-input" type="text" id="to" name="to" required placeholder="Destination">
+
+      <label for="people" class="ride-form-label">Number of People Allowed</label>
+      <input class="ride-form-input" type="number" min="1" max="10" id="people" name="people" required placeholder="e.g. 3">
+
+      <label for="expenses" class="ride-form-label">Expected Expenses (INR)</label>
+      <input class="ride-form-input" type="number" min="0" id="expenses" name="expenses" required placeholder="e.g. 500">
+
+      <button type="submit" class="ride-form-btn">Post Ride</button>
+      <div class="ride-form-status" id="status"></div>
+    </form>
+  </div>
+  <script>
+    document.getElementById('createRideForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Here you would send data to your backend/Firebase
+      document.getElementById('status').style.color = "#27ae60";
+      document.getElementById('status').textContent = "Ride created successfully!";
+      setTimeout(() => {
+        document.getElementById('status').textContent = "";
+        // window.location.href = 'home.html'; // Uncomment to redirect after creation
+      }, 2000);
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

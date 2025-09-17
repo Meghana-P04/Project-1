@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rides by Route - RideShare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #232526;
+      background-image:
+        linear-gradient(120deg, rgba(52,58,64,0.88) 0%, rgba(34,37,38,0.97) 100%),
+        url('https://images.unsplash.com/photo-1465447142348-e9952c393450?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .route-search-container {
+      background: rgba(255,255,255,0.98);
+      padding: 2.2rem 2rem 2rem 2rem;
+      border-radius: 1.5rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 8px 32px 0 rgba(34,34,34,0.21);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+    .route-search-title {
+      font-size: 2rem;
+      color: #51576d;
+      font-weight: bold;
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .route-form-label {
+      color: #51576d;
+      font-weight: 500;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .route-form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #51576d;
+      background: #f9f9fa;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+      color: #232526;
+    }
+    .route-form-input:focus {
+      border-color: #232526;
+    }
+    .route-form-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #51576d 30%, #232526 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 1.08rem;
+      font-weight: bold;
+      margin-top: 14px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 18px 0 rgba(51,51,51,0.10);
+    }
+    .route-form-btn:hover, .route-form-btn:focus {
+      background: linear-gradient(90deg, #232526 30%, #51576d 100%);
+      box-shadow: 0 6px 28px 0 rgba(51,51,51,0.13);
+    }
+    .rides-result-title {
+      color: #51576d;
+      margin-top: 1.4rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: 1.12rem;
+      text-align: center;
+    }
+    .ride-result-entry {
+      background: #f9f9fa;
+      border-radius: 1.1rem;
+      box-shadow: 0 1px 8px 0 rgba(44,44,44,0.10);
+      margin-bottom: 18px;
+      padding: 1rem 1.3rem;
+      width: 95%;
+      border: 1.3px solid #51576d22;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.18s;
+    }
+    .ride-result-entry:last-child { margin-bottom: 0; }
+    .ride-result-entry:hover {
+      box-shadow: 0 6px 24px 0 rgba(80,79,79,0.17);
+      border: 1.5px solid #51576d55;
+    }
+    .ride-route {
+      color: #232526;
+      font-weight: 600;
+      font-size: 1.13rem;
+      margin-bottom: 3px;
+    }
+    .ride-details {
+      color: #51576d;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    .join-btn {
+      background: linear-gradient(90deg, #51576d 30%, #232526 100%);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 0;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 7px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .join-btn:hover, .join-btn:focus {
+      background: linear-gradient(90deg, #232526 30%, #51576d 100%);
+    }
+    @media (max-width: 600px) {
+      .route-search-container {
+        max-width: 97vw;
+        padding: 1.2rem 5vw 1.2rem 5vw;
+      }
+      .route-search-title {
+        font-size: 1.3rem;
+      }
+      .ride-result-entry {
+        width: 99%;
+        padding: 1rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="route-search-container">
+    <div class="route-search-title">View Rides by Route</div>
+    <form id="routeForm" autocomplete="off">
+      <label for="from" class="route-form-label">From</label>
+      <input class="route-form-input" type="text" id="from" name="from" required placeholder="Starting place">
+
+      <label for="to" class="route-form-label">To</label>
+      <input class="route-form-input" type="text" id="to" name="to" required placeholder="Destination">
+
+      <button type="submit" class="route-form-btn">Show Rides</button>
+    </form>
+    <div class="rides-result-title" id="resultTitle" style="display:none;">Rides Found:</div>
+    <div id="ridesResult"></div>
+  </div>
+  <script>
+    // Example rides data, replace with dynamic data in a real app
+    const rides = [
+      {from: "Bangalore", to: "Mysore", people: 2, expenses: 400},
+      {from: "Hyderabad", to: "Vijayawada", people: 3, expenses: 600},
+      {from: "Pune", to: "Mumbai", people: 1, expenses: 300},
+      {from: "Chennai", to: "Bangalore", people: 2, expenses: 700},
+      {from: "Delhi", to: "Agra", people: 4, expenses: 900}
+    ];
+
+    document.getElementById('routeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const from = document.getElementById('from').value.trim().toLowerCase();
+      const to = document.getElementById('to').value.trim().toLowerCase();
+      const resultDiv = document.getElementById('ridesResult');
+      resultDiv.innerHTML = '';
+      let found = false;
+      rides.forEach(ride => {
+        if (
+          ride.from.toLowerCase().includes(from) &&
+          ride.to.toLowerCase().includes(to)
+        ) {
+          found = true;
+          resultDiv.innerHTML += `
+            <div class="ride-result-entry">
+              <div class="ride-route">From: ${ride.from} → To: ${ride.to}</div>
+              <div class="ride-details">People allowed: ${ride.people} | Expenses: ₹${ride.expenses}</div>
+              <button class="join-btn" onclick="alert('You requested to join this ride!')">Join this Ride</button>
+            </div>
+          `;
+        }
+      });
+      document.getElementById('resultTitle').style.display = found ? 'block' : 'none';
+      if (!found) {
+        resultDiv.innerHTML = `<div class="ride-details" style="color:#c0392b;text-align:center;">No rides found for your route.</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

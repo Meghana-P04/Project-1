@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RideShare App - Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #232526;
+      background-image:
+        linear-gradient(120deg, rgba(52,58,64,0.88) 0%, rgba(34,37,38,0.97) 100%),
+        url('https://images.unsplash.com/photo-1465447142348-e9952c393450?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .signup-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      position: relative;
+      width: 100vw;
+    }
+    .signup-card {
+      background: rgba(255,255,255,0.98);
+      padding: 2.5rem 2rem 2rem 2rem;
+      border-radius: 1.5rem;
+      max-width: 370px;
+      width: 100%;
+      box-shadow: 0 8px 32px 0 rgba(66, 66, 66, 0.18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .signup-title {
+      font-size: 2.1rem;
+      color: #51576d;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin: 0 0 4px 0;
+      text-shadow: 1px 1px 0 #504f4f20;
+      text-align: center;
+    }
+    .signup-subtitle {
+      color: #51576d;
+      font-size: 1.08rem;
+      margin-bottom: 20px;
+      letter-spacing: 0.2px;
+      font-style: italic;
+      text-align: center;
+    }
+    .signup-label {
+      color: #51576d;
+      font-weight: 500;
+      margin: 0 0 5px 0;
+      display: block;
+      margin-top: 12px;
+    }
+    .signup-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #51576d;
+      background: #f9f9fa;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      outline: none;
+      color: #232526;
+    }
+    .signup-input:focus {
+      border-color: #232526;
+    }
+    .recaptcha-style {
+      margin: 12px 0;
+      display: flex;
+      justify-content: center;
+    }
+    .signup-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #51576d 30%, #232526 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 0;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 3px 18px 0 rgba(80,79,79,0.09);
+    }
+    .signup-btn:hover, .signup-btn:focus {
+      background: linear-gradient(90deg, #232526 40%, #51576d 100%);
+      box-shadow: 0 6px 32px 0 rgba(80,79,79,0.13);
+    }
+    .signup-btn-verify {
+      margin-top: 6px;
+      background: linear-gradient(90deg, #edc988 40%, #51576d 100%);
+      color: #232526;
+      font-weight: bold;
+    }
+    .signup-btn-verify:hover,
+    .signup-btn-verify:focus {
+      background: linear-gradient(90deg, #51576d 40%, #edc988 100%);
+    }
+    .signup-status {
+      margin-top: 14px;
+      min-height: 22px;
+      color: #c0392b;
+      font-weight: 500;
+      text-align: center;
+      font-size: 1rem;
+    }
+    @media (max-width: 480px) {
+      .signup-card {
+        max-width: 97vw;
+        padding: 1.2rem 5vw 1.2rem 5vw;
+      }
+      .signup-title {
+        font-size: 1.45rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="signup-card">
+      <div class="signup-title">RideShare Signup</div>
+      <div class="signup-subtitle">Join the journey. Share the ride. Experience the road in style.</div>
+      <form id="loginForm" autocomplete="off">
+        <label for="phone" class="signup-label">Phone Number</label>
+        <input type="tel" id="phone" name="phone" required pattern="^\+?\d{10,15}$" placeholder="+11234567890" class="signup-input">
+        <div id="recaptcha-container" class="recaptcha-style"></div>
+        <button type="button" id="sendOtpBtn" class="signup-btn">Send OTP</button>
+        <div id="otpSection" style="display:none;">
+          <label for="otp" class="signup-label">OTP</label>
+          <input type="text" id="otp" name="otp" maxlength="6" pattern="\d{6}" placeholder="Enter OTP" class="signup-input">
+          <button type="button" id="verifyOtpBtn" class="signup-btn signup-btn-verify">Verify OTP</button>
+        </div>
+        <div class="signup-status" id="status"></div>
+      </form>
+    </div>
+  </div>
+  <script>
+    // TODO: Replace with your own Firebase config!
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    let confirmationResult = null;
+    let status = document.getElementById('status');
+    window.onload = function() {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'normal',
+        'callback': function(response) {
+          // reCAPTCHA solved
+        }
+      });
+    };
+
+    document.getElementById('sendOtpBtn').onclick = function() {
+      const phoneNumber = document.getElementById('phone').value;
+      status.textContent = "";
+      if (!phoneNumber.match(/^\+?\d{10,15}$/)) {
+        status.textContent = "Please enter a valid phone number with country code.";
+        return;
+      }
+      const appVerifier = window.recaptchaVerifier;
+      firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+        .then(function(result) {
+          confirmationResult = result;
+          document.getElementById('otpSection').style.display = 'block';
+          status.textContent = "OTP sent! Please check your phone.";
+        }).catch(function(error) {
+          status.textContent = error.message;
+          window.recaptchaVerifier.render().then(function(widgetId) {
+            grecaptcha.reset(widgetId);
+          });
+        });
+    };
+
+    document.getElementById('verifyOtpBtn').onclick = function() {
+      const code = document.getElementById('otp').value;
+      status.textContent = "";
+      if (!confirmationResult) {
+        status.textContent = "You must request OTP first.";
+        return;
+      }
+      confirmationResult.confirm(code)
+        .then(function(result) {
+          status.textContent = "OTP verified! Redirecting...";
+          setTimeout(() => window.location.href = 'profile.html', 1200);
+        }).catch(function(error) {
+          status.textContent = "Invalid OTP: " + error.message;
+        });
+    };
+  </script>
+</body>
+</html>
